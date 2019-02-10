@@ -38,65 +38,54 @@ public class compraRelampagoTest {
 	@Test
 	public void comprasRelampagoTest() {
 
-		WebElement botaoLogin = navegador.findElement(By.xpath("//a[@class='btn middle line1 cart_btn']"));
+		WebElement botaoFormularioLogin = navegador.findElement(By.xpath("//a[@class='btn middle line1 cart_btn']"));
 
-		if (botaoLogin != null && botaoLogin.isDisplayed()) {
-			botaoLogin.click();
+		if (botaoFormularioLogin != null && botaoFormularioLogin.isDisplayed()) {
+			botaoFormularioLogin.click();
 		}
 
-		WebElement formularioLogin = navegador.findElement(By.xpath("//a[@class='authTab_link active']"));
-		WebElement botaoLoginPeloGoogle = navegador.findElement(By.xpath("//i[@class='icon-gplus']"));
+		tela.esperarAteQuandoOElementoEstiverVisivel(navegador,
+				navegador.findElement(By.xpath("//a[@class='authTab_link active']")));
 
-		if (formularioLogin.isDisplayed() && botaoLoginPeloGoogle.isEnabled()) {
+		tela.esperarAteQuandoOElementoEstiverVisivel(navegador,
+				navegador.findElement(By.xpath("//form[@action='javascript:;']//input[@placeholder='Email']")));
 
-			tela.trocarParaJanelaPopUp(navegador, botaoLoginPeloGoogle);
+		WebElement campoUsuario = navegador
+				.findElement(By.xpath("//form[@action='javascript:;']//input[@placeholder='Email']"));
 
-			tela.esperaImplicita(navegador);
-			WebElement campoUsuario = navegador.findElement(By.id("identifierId"));
-			String valorCampoUsuario = "jefferson@inovadorsite.com.br";
+		tela.esperarAteQuandoOElementoEstiverVisivel(navegador,
+				navegador.findElement(By.xpath("//input[@id='password']")));
 
-			campoUsuario.click();
-			tela.esperaImplicita(navegador);
-			campoUsuario.sendKeys(valorCampoUsuario);
+		WebElement campoSenha = navegador.findElement(By.xpath("//input[@id='password']"));
 
-			WebElement botaoProximo = navegador.findElement(By.id("identifierNext"));
-			botaoProximo.click();
-			tela.esperaExplicitaPorElementoNaoVisivel(navegador, "//input[@name='password']");
+		String usuario = "saviojrc.1988@gmail.com";
+		String senha = "s2468101";
 
-			WebElement campoSenha = navegador.findElement(By.xpath("//input[@name='password']"));
-			tela.esperaImplicitaPorId(navegador, campoSenha);
+		campoUsuario.click();
+		campoUsuario.sendKeys(usuario);
+		campoSenha.click();
+		campoSenha.sendKeys(senha);
 
-			String valorCampoSenha = "j2468101";
+		WebElement botaoLogin = navegador.findElement(By.xpath("//input[@id='js-btnSubmit']"));
 
-			tela.preencherCampoPorXpath(campoSenha, valorCampoSenha);
-			tela.esperaImplicita(navegador);
-			WebElement botaoProxima = navegador.findElement(By.xpath("//span[contains(text(),'Próxima')]"));
-			botaoProxima.click();
-			tela.esperaImplicita(navegador);
+		botaoLogin.click();
 
-			botaoProxima.click();
+		tela.esperaImplicita(navegador);
 
-			tela.esperaImplicita(navegador);
-			
-			tela.esperaImplicitaPorId(navegador, navegador.findElement(By.xpath("//a[@class='cart_link']")));
+		WebElement produto = navegador.findElement(By.xpath("//a[@class='cart_link']"));
+		WebElement preco = navegador.findElement(By.xpath("//p[@class='cart_subtotal']"));
 
-			Double precoEsperado = 28.99;
-			String precoProdutoTela = "";
-			if (navegador.findElement(By.xpath("//a[@class='cart_link']")).isDisplayed()) {
-				WebElement preco = navegador.findElement(By.xpath("//p[@class='cart_price']"));
-				if (preco.isDisplayed()) {
-					precoProdutoTela = preco.getText().trim().replace("$", "");
-				}
+		if (produto.isDisplayed() && preco.isDisplayed()) {
+			Double valorProdutoTela = Double.valueOf(preco.getText().replace("$", ""));
+			WebElement botaoProcederParaCompra = navegador
+					.findElement(By.xpath("//a[@class='btn middle strong proceed_checkout']"));
+
+			while (valorProdutoTela > 1000.00) {
+				navegador.navigate().refresh();
 			}
 
-			if (!precoProdutoTela.isEmpty() && Double.valueOf(precoProdutoTela) > 0) {
-
-				if (precoEsperado == Double.valueOf(precoProdutoTela)) {
-					System.out.println("Preço ok");
-				} else if (precoEsperado != Double.valueOf(precoProdutoTela)) {
-					navegador.navigate().refresh();
-				}
-
+			if ((valorProdutoTela < 1000.00) && botaoProcederParaCompra.isEnabled()) {
+				botaoProcederParaCompra.click();
 			}
 
 		}

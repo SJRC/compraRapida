@@ -64,7 +64,7 @@ public class Tela {
 		navegador.manage().window().maximize();
 	}
 
-	public void esperaImplicitaPorId(WebDriver navegador, WebElement element) {
+	public void esperarAteQuandoOElementoEstiverVisivel(WebDriver navegador, WebElement element) {
 
 		WebDriverWait wait = new WebDriverWait(navegador, 20); // here, wait time is 20 seconds
 
